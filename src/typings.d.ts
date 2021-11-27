@@ -88,11 +88,18 @@ declare interface SwipeablePanelProps extends React.Props<SwipeablePanel> {
    * You can pass your scroll view props
    */
   scrollViewProps?: ScrollViewProps;
-}
 
-declare var LARGE_PANEL_CONTENT_HEIGHT: number;
-declare var SMALL_PANEL_CONTENT_HEIGHT: number;
+  /**
+   * Minimized size of panel 
+   */
+  minimizedSize?: number;
+
+  /**
+   * Top margin of panel when maximized 
+   */
+  maximizedTopMargin?: number;
+}
 
 declare class SwipeablePanel extends React.Component<SwipeablePanelProps, any> {}
 
-export { SwipeablePanel, LARGE_PANEL_CONTENT_HEIGHT, SMALL_PANEL_CONTENT_HEIGHT };
+export { SwipeablePanel };

@@ -16,7 +16,7 @@ import { Close } from './Close';
 
 let FULL_HEIGHT = Dimensions.get('window').height;
 let FULL_WIDTH = Dimensions.get('window').width;
-let PANEL_HEIGHT = FULL_HEIGHT - 100;
+let PANEL_HEIGHT = FULL_HEIGHT;
 
 const STATUS = {
   CLOSED: 0,
@@ -42,6 +42,8 @@ type SwipeablePanelProps = {
   barStyle?: object;
   allowTouchOutside?: boolean;
   scrollViewProps?: ScrollViewProps;
+  minimizedSize?: number;
+  maximizedTopMargin?: number;
 };
 
 type MaybeAnimated<T> = T | Animated.Value;
@@ -76,7 +78,7 @@ class SwipeablePanel extends Component<SwipeablePanelProps, SwipeablePanelState>
       orientation: FULL_HEIGHT >= FULL_WIDTH ? 'portrait' : 'landscape',
       deviceWidth: FULL_WIDTH,
       deviceHeight: FULL_HEIGHT,
-      panelHeight: PANEL_HEIGHT,
+      panelHeight: PANEL_HEIGHT - props.maximizedTopMargin,
     };
 
     this.pan = new Animated.ValueXY({ x: 0, y: FULL_HEIGHT });
@@ -136,13 +138,13 @@ class SwipeablePanel extends Component<SwipeablePanelProps, SwipeablePanelState>
     const dimesions = Dimensions.get('screen');
     FULL_HEIGHT = dimesions.height;
     FULL_WIDTH = dimesions.width;
-    PANEL_HEIGHT = FULL_HEIGHT - 100;
+    PANEL_HEIGHT = FULL_HEIGHT;
 
     this.setState({
       orientation: dimesions.height >= dimesions.width ? 'portrait' : 'landscape',
       deviceWidth: FULL_WIDTH,
       deviceHeight: FULL_HEIGHT,
-      panelHeight: PANEL_HEIGHT,
+      panelHeight: PANEL_HEIGHT - this.props.maximizedTopMargin,
     });
 
     this.props.onClose();
@@ -174,7 +176,7 @@ class SwipeablePanel extends Component<SwipeablePanelProps, SwipeablePanelState>
 
     if (newStatus === STATUS.CLOSED) newY = PANEL_HEIGHT;
     else if (newStatus === STATUS.SMALL)
-      newY = this.state.orientation === 'portrait' ? FULL_HEIGHT - (smallPanelHeight ?? 400) : FULL_HEIGHT / 3;
+      newY = this.state.orientation === 'portrait' ? FULL_HEIGHT - (smallPanelHeight ?? this.props.minimizedSize) : FULL_HEIGHT / 3;
     else if (newStatus === STATUS.LARGE) newY = 0;
 
     this.setState({
@@ -290,7 +292,7 @@ const SwipeablePanelStyles = StyleSheet.create({
     position: 'absolute',
     height: PANEL_HEIGHT,
     width: FULL_WIDTH - 50,
-    transform: [{ translateY: FULL_HEIGHT - 100 }],
+    transform: [{ translateY: FULL_HEIGHT }],
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: 'white',
@@ -315,8 +317,5 @@ const SwipeablePanelStyles = StyleSheet.create({
   },
 });
 
-const SMALL_PANEL_CONTENT_HEIGHT = PANEL_HEIGHT - (FULL_HEIGHT - 400) - 25;
-const LARGE_PANEL_CONTENT_HEIGHT = PANEL_HEIGHT - 25;
-
-export { SwipeablePanel, LARGE_PANEL_CONTENT_HEIGHT, SMALL_PANEL_CONTENT_HEIGHT };
+export { SwipeablePanel };
 export type { SwipeablePanelProps };
